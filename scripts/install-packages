@@ -25,6 +25,7 @@ function install-pip() {
 }
 
 function install-bo-python() {
+  install-pip
   pip install nose mock coverage injector
   pip install cython
   pip install numpy
