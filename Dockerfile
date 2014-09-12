@@ -5,5 +5,4 @@ COPY scripts /root/setup/scripts
 WORKDIR /root/setup
 RUN scripts/install-packages
 VOLUME ["/data"]
-CMD ["-f"]
-ENTRYPOINT["cron"]
+ENTRYPOINT ["cron", "-f"]
