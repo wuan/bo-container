@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function install-dev-dependencies() {
-  apt-get install -y build-essential automake autoconf libtool 
+  apt-get install -y debhelper build-essential automake autoconf libtool pkg-config
   apt-get install -y liblog4cpp5-dev libcppunit-dev libjson0-dev libboost-date-time-dev libboost-regex-dev libboost-program-options-dev libboost-math-dev
   apt-get install -y python python-dev python-setuptools
   apt-get install -y libgeos-dev libblas-dev liblapack-dev gfortran
@@ -13,13 +13,47 @@ function install-bo-lib() {
   tar xzf v1.3.0.tar.gz
   cd bo-lib-1.3.0
   ./bootstrap
-  ./configure
-  make
-  tests/test-lib
-  make install
+  dpkg-buildpackage
   cd ..
-  rm -rf bo-lib-1.3.0
+  dpkg -i libblitzortung*.deb
+  rm -rf bo-lib-1.3.0 libblitzortung* v1.3.0.tar.gz
+}
+
+function install-pip() {
+  wget https://bootstrap.pypa.io/get-pip.py
+  python get-pip.py
+}
+
+function install-bo-python() {
+  pip install nose mock coverage injector
+  pip install cython
+  pip install numpy
+  pip install pyproj
+  pip install shapely
+  pip insatll scipy
+  pip install pandas
+  pip install fastcluster 
+
+  wget https://github.com/wuan/bo-python/archive/master.tar.gz
+  tar xzf master.tar.gz
+  cd bo-python-master
+  dpkg-buildpackage
+  cd ..
+  dpkg -i python-*.deb
+  rm -rf bo-python-master master.tar.gz python-*
+}
+
+function install-bo-server() {
+  wget https://github.com/wuan/bo-server/archive/master.tar.gz
+  tar xzf master.tar.gz
+  cd bo-server-master
+  ./bootstrap
+  dpkg-buildpackage
+  cd ..
+  dpkg -i blitzortung-server*.deb
+  rm -rf bo-server-master master.tar.gz blitzortung-server-*
 }
 
 install-dev-dependencies
 install-bo-lib
+install-bo-python
